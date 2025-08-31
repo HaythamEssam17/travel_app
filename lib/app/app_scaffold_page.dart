@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:travel_app/app/di/injection.dart';
 import 'package:travel_app/core/helpers/extensions/context_extensions.dart';
 
 import '../core/features/connectivity_feature/presentation/logic/connectivity_cubit.dart';
@@ -26,38 +27,46 @@ class AppScaffoldPage extends StatefulWidget {
 class _AppScaffoldPageState extends State<AppScaffoldPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      // backgroundColor: widget.backgroundColor ?? context.appColors.bgWhite,
-      body: Column(
-        children: [
-          if (widget.appBar != null) ...[
-            widget.appBar!,
-            getSpaceHeight(16),
-          ] else ...[
-            getSpaceHeight(kToolbarHeight),
-          ],
-          Expanded(
-            child: GestureDetector(
-              onTap: () => context.hideKeyboard(),
-              child: BlocConsumer<ConnectivityCubit, ConnectivityStates>(
-                listener: (connectivityCxt, connectivityState) {
-                  devLog('connectivityState: from state $connectivityState');
-                },
-                builder: (context, connectivityState) {
-                  if (connectivityState is ConnectivityDisconnected) {
-                    return NoConnectionScreen();
-                  }
-                  return SizedBox(
-                    height: SharedText.screenHeight,
-                    width: SharedText.screenWidth,
-                    child: widget.body,
-                  );
-                },
+    return BlocProvider<ConnectivityCubit>(
+      create: (_) => getIt<ConnectivityCubit>(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: widget.backgroundColor ?? context.appColors.bgWhite,
+        body: SafeArea(
+          // top: false,
+          child: Column(
+            children: [
+              if (widget.appBar != null) ...[
+                widget.appBar!,
+                getSpaceHeight(16),
+              ] else ...[
+                getSpaceHeight(kToolbarHeight),
+              ],
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => context.hideKeyboard(),
+                  child: BlocConsumer<ConnectivityCubit, ConnectivityStates>(
+                    listener: (connectivityCxt, connectivityState) {
+                      devLog(
+                        'connectivityState: from state $connectivityState',
+                      );
+                    },
+                    builder: (context, connectivityState) {
+                      if (connectivityState is ConnectivityDisconnected) {
+                        return NoConnectionScreen();
+                      }
+                      return SizedBox(
+                        height: SharedText.screenHeight,
+                        width: SharedText.screenWidth,
+                        child: widget.body,
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

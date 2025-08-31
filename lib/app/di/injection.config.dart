@@ -16,8 +16,10 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:travel_app/app/di/network_module.dart' as _i11;
 import 'package:travel_app/app/di/register_module.dart' as _i851;
+import 'package:travel_app/app/router/guards.dart' as _i347;
 import 'package:travel_app/core/features/connectivity_feature/presentation/logic/connectivity_cubit.dart'
     as _i614;
+import 'package:travel_app/core/network/dio_client.dart' as _i162;
 import 'package:travel_app/features/auth/data/datasources/auth_local_ds.dart'
     as _i96;
 import 'package:travel_app/features/auth/data/datasources/auth_remote_ds.dart'
@@ -26,10 +28,13 @@ import 'package:travel_app/features/auth/data/repositories/auth_repository_impl.
     as _i272;
 import 'package:travel_app/features/auth/domain/repositories/auth_repository.dart'
     as _i382;
+import 'package:travel_app/features/auth/domain/usecases/login.dart' as _i531;
 import 'package:travel_app/features/auth/domain/usecases/splash_usecase.dart'
     as _i975;
 import 'package:travel_app/features/auth/presentation/blocs/login_cubit/login_cubit.dart'
     as _i169;
+import 'package:travel_app/features/auth/presentation/blocs/signup_cubit/signup_cubit.dart'
+    as _i288;
 import 'package:travel_app/features/auth/presentation/blocs/splash_cubit/splash_cubit.dart'
     as _i278;
 
@@ -42,18 +47,26 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     final networkModule = _$NetworkModule();
+    gh.factory<_i614.ConnectivityCubit>(() => _i614.ConnectivityCubit());
     await gh.factoryAsync<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage(),
       preResolve: true,
     );
-    gh.factory<_i169.LoginCubit>(() => _i169.LoginCubit());
-    gh.factory<_i614.ConnectivityCubit>(() => _i614.ConnectivityCubit());
-    gh.lazySingleton<_i361.Dio>(() => registerModule.dio());
+    gh.factory<_i288.SignupCubit>(() => _i288.SignupCubit());
     gh.lazySingleton<_i895.Connectivity>(() => networkModule.connectivity);
+    gh.lazySingleton<_i361.Dio>(() => registerModule.dio());
     gh.factory<_i458.AuthRemoteDataSource>(
       () => _i458.AuthRemoteDataSourceImpl(),
     );
-    gh.factory<_i96.AuthLocalDataSource>(() => _i96.AuthLocalDataSourceImpl());
+    gh.lazySingleton<_i162.DioHelper>(
+      () => registerModule.dioHelper(gh<_i361.Dio>()),
+    );
+    gh.factory<_i96.AuthLocalDataSource>(
+      () => _i96.AuthLocalDataSourceImpl(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.factory<_i347.AuthGuard>(
+      () => _i347.AuthGuard(gh<_i96.AuthLocalDataSource>()),
+    );
     gh.lazySingleton<_i382.IAuthRepository>(
       () => _i272.AuthRepositoryImpl(
         gh<_i458.AuthRemoteDataSource>(),
@@ -62,6 +75,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i975.SplashUseCase>(
       () => _i975.SplashUseCase(gh<_i382.IAuthRepository>()),
+    );
+    gh.factory<_i531.LoginUseCase>(
+      () => _i531.LoginUseCase(gh<_i382.IAuthRepository>()),
+    );
+    gh.factory<_i169.LoginCubit>(
+      () => _i169.LoginCubit(gh<_i531.LoginUseCase>()),
     );
     gh.factory<_i278.SplashCubit>(
       () => _i278.SplashCubit(gh<_i975.SplashUseCase>()),

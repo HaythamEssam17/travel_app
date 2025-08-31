@@ -1,15 +1,14 @@
 import 'package:dartz/dartz.dart';
 
-import '../model/base_model.dart';
 import 'error_handling/custom_error.dart';
 import 'error_handling/custom_exception.dart';
 
-Future<Either<CustomError, BaseModel>> executeAndHandleError(
-  Future<BaseModel> Function() function,
+Future<Either<CustomError, T>> executeAndHandleError<T>(
+  Future<T> Function() function,
 ) async {
   try {
-    final BaseModel result = await function();
-    return right(BaseModel.fromJson(result.data));
+    final T result = await function();
+    return Right(result);
   } on CustomException catch (ex) {
     return Left(
       CustomError(

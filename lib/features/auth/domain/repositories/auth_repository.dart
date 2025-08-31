@@ -1,10 +1,25 @@
-import '../../data/models/user_model.dart';
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/network/error_handling/custom_error.dart';
+import '../../data/models/user_credentials_model.dart';
 
 abstract class IAuthRepository {
-  Future<void> login(String username, String password);
+  Future<Either<CustomError, UserCredentialsModel>> login(
+    String username,
+    String password,
+  );
+
   Future<void> logout();
+
   Future<void> signup(String username, String phone);
+
   Future<void> refreshToken();
+
   Future<bool> isLoggedIn();
-  Future<User?> getUser();
+
+  Future<void> setLoggedIn(bool value);
+
+  Future<void> clearUser();
+
+  Future<UserCredentialsModel?> getUser();
 }

@@ -239,4 +239,29 @@ class DioHelper {
       throw CustomException(CustomStatusCodeErrorType.unExcepted, 'error.png');
     }
   }
+
+  Future<Response> postData({
+    required String url,
+    required dynamic data,
+  }) async {
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+        options: Options(contentType: Headers.formUrlEncodedContentType),
+      );
+
+      return response;
+    } on DioException catch (exception) {
+      /// Get custom massage for the exception
+      final errorType = DioExceptions.fromDioError(exception).errorType;
+
+      final errorMessage = DioExceptions.fromDioError(exception).errorMassage;
+
+      /// throw custom exception
+      throw CustomException(errorType, 'error.png', errorMassage: errorMessage);
+    } catch (error) {
+      throw CustomException(CustomStatusCodeErrorType.unExcepted, 'error.png');
+    }
+  }
 }

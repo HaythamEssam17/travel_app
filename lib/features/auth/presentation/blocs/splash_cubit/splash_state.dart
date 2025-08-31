@@ -8,8 +8,7 @@ class SplashInitial extends SplashState {}
 class SplashLoading extends SplashState {}
 
 class SplashAuthenticated extends SplashState {
-  final User user;
-  SplashAuthenticated(this.user);
+  SplashAuthenticated();
 }
 
 class SplashUnauthenticated extends SplashState {}

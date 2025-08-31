@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../data/models/user_model.dart';
 import '../../../domain/usecases/splash_usecase.dart';
 
 part 'splash_state.dart';
@@ -16,10 +15,27 @@ class SplashCubit extends Cubit<SplashState> {
   Future<void> checkUser() async {
     emit(SplashLoading());
 
+    await _splashUseCase.clearUser();
+
     final user = await _splashUseCase.getUser();
 
+    await Future.delayed(const Duration(seconds: 1));
+
     if (user != null) {
-      emit(SplashAuthenticated(user));
+      emit(SplashAuthenticated());
+    } else {
+      emit(SplashUnauthenticated());
+    }
+  }
+
+  Future<void> init() async {
+    emit(SplashLoading());
+    await Future.delayed(const Duration(seconds: 1));
+
+    final isLoggedIn = await _splashUseCase.isLoggedIn();
+
+    if (isLoggedIn) {
+      emit(SplashAuthenticated());
     } else {
       emit(SplashUnauthenticated());
     }
