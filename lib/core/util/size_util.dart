@@ -7,16 +7,20 @@ import '../helpers/shared_texts.dart';
 //
 
 late BuildContext sizeUtilContext;
+
 MediaQueryData get mediaQueryData => MediaQuery.of(sizeUtilContext);
 //
 //
 // ///This method is used to get device viewport width.
 
 bool get isIpad => SharedText.deviceType == DeviceType.tablet;
+
 num get _width => num.parse(SharedText.screenWidth.toString());
+
 num get designWidth => num.parse(SharedText.designWidth.toString());
+
 num get _height => mediaQueryData.size.height;
-num DESIGN_STATUS_BAR = 0;
+num designStatusBar = 0;
 //
 // ///This method is used to get device viewport height.
 get _contentHeight {
@@ -90,7 +94,7 @@ extension NumExtensions on num {
       }
     }
 
-    return ((this * screenHeight) / (designWidth - DESIGN_STATUS_BAR)) *
+    return ((this * screenHeight) / (designWidth - designStatusBar)) *
         multiplier;
   }
 

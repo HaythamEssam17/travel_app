@@ -11,7 +11,10 @@ abstract class IAuthRepository {
 
   Future<void> logout();
 
-  Future<void> signup(String username, String phone);
+  Future<Either<CustomError, UserCredentialsModel>> signup(
+    String username,
+    String phone,
+  );
 
   Future<void> refreshToken();
 

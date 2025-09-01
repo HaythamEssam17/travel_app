@@ -7,7 +7,6 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_ds.dart';
 import '../datasources/auth_remote_ds.dart';
 
-@LazySingleton(as: IAuthRepository)
 @Injectable(as: IAuthRepository)
 class AuthRepositoryImpl implements IAuthRepository {
   final AuthRemoteDataSource remote;
@@ -39,8 +38,16 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<void> signup(String username, String phone) async {
-    // TODO: implement signup
+  Future<Either<CustomError, UserCredentialsModel>> signup(
+    String username,
+    String phone,
+  ) async {
+    return await remote.signup(username, phone).then((value) {
+      return value.fold((l) => left(l), (r) async {
+        await local.saveUser(r);
+        return right(r);
+      });
+    });
   }
 
   @override

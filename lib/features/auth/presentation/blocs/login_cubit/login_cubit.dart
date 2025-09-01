@@ -38,4 +38,19 @@ class LoginCubit extends Cubit<LoginStates> {
       (r) => emit(LoginSuccess()),
     );
   }
+
+  void loginMockData() async {
+    emit(LoginLoading());
+
+    try {
+      await _loginUseCase.loginMockData(
+        loginForm.emailController.text,
+        loginForm.passwordController.text,
+      );
+
+      emit(LoginSuccess());
+    } catch (e) {
+      emit(LoginError(e.toString()));
+    }
+  }
 }

@@ -22,21 +22,53 @@ import 'package:travel_app/core/features/connectivity_feature/presentation/logic
 import 'package:travel_app/core/network/dio_client.dart' as _i162;
 import 'package:travel_app/features/auth/data/datasources/auth_local_ds.dart'
     as _i96;
+import 'package:travel_app/features/auth/data/datasources/auth_mock_local_ds.dart'
+    as _i574;
+import 'package:travel_app/features/auth/data/datasources/auth_mock_remote_ds.dart'
+    as _i124;
 import 'package:travel_app/features/auth/data/datasources/auth_remote_ds.dart'
     as _i458;
+import 'package:travel_app/features/auth/data/repositories/auth_mock_repository_impl.dart'
+    as _i604;
 import 'package:travel_app/features/auth/data/repositories/auth_repository_impl.dart'
     as _i272;
+import 'package:travel_app/features/auth/domain/repositories/auth_mock_repository.dart'
+    as _i653;
 import 'package:travel_app/features/auth/domain/repositories/auth_repository.dart'
     as _i382;
 import 'package:travel_app/features/auth/domain/usecases/login.dart' as _i531;
+import 'package:travel_app/features/auth/domain/usecases/logout.dart' as _i461;
+import 'package:travel_app/features/auth/domain/usecases/signup.dart' as _i1059;
 import 'package:travel_app/features/auth/domain/usecases/splash_usecase.dart'
     as _i975;
+import 'package:travel_app/features/auth/presentation/blocs/auth_bloc/auth_bloc.dart'
+    as _i570;
 import 'package:travel_app/features/auth/presentation/blocs/login_cubit/login_cubit.dart'
     as _i169;
 import 'package:travel_app/features/auth/presentation/blocs/signup_cubit/signup_cubit.dart'
     as _i288;
 import 'package:travel_app/features/auth/presentation/blocs/splash_cubit/splash_cubit.dart'
     as _i278;
+import 'package:travel_app/features/search/data/data_source/flight_remote_ds.dart'
+    as _i517;
+import 'package:travel_app/features/search/data/data_source/hotel_remote_ds.dart'
+    as _i562;
+import 'package:travel_app/features/search/data/data_source/mock_flight_remote_ds.dart'
+    as _i201;
+import 'package:travel_app/features/search/data/data_source/mock_hotel_remote_ds.dart'
+    as _i654;
+import 'package:travel_app/features/search/data/repository/search_repository_impl.dart'
+    as _i62;
+import 'package:travel_app/features/search/domain/repository/search_repository.dart'
+    as _i971;
+import 'package:travel_app/features/search/domain/usecase/hotel_search.dart'
+    as _i503;
+import 'package:travel_app/features/search/domain/usecase/search_flights.dart'
+    as _i156;
+import 'package:travel_app/features/search/presentation/bloc/flight_search/flight_search_cubit.dart'
+    as _i774;
+import 'package:travel_app/features/search/presentation/bloc/hotel_search/hotel_search_cubit.dart'
+    as _i371;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -58,29 +90,83 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i458.AuthRemoteDataSource>(
       () => _i458.AuthRemoteDataSourceImpl(),
     );
+    gh.factory<_i562.HotelRemoteDataSource>(
+      () => _i654.HotelRemoteDataSourceMock(),
+    );
+    gh.factory<_i124.AuthMockRemoteDataSource>(
+      () => _i124.AuthMockRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i162.DioHelper>(
       () => registerModule.dioHelper(gh<_i361.Dio>()),
+    );
+    gh.factory<_i574.AuthMockLocalDataSource>(
+      () => _i574.AuthMockLocalDataSourceImpl(),
+    );
+    gh.factory<_i517.FlightRemoteDataSource>(
+      () => _i201.MockFlightRemoteDataSource(),
     );
     gh.factory<_i96.AuthLocalDataSource>(
       () => _i96.AuthLocalDataSourceImpl(gh<_i558.FlutterSecureStorage>()),
     );
-    gh.factory<_i347.AuthGuard>(
-      () => _i347.AuthGuard(gh<_i96.AuthLocalDataSource>()),
+    gh.factory<_i653.IAuthMockRepository>(
+      () => _i604.AuthMockRepositoryImpl(
+        gh<_i124.AuthMockRemoteDataSource>(),
+        gh<_i574.AuthMockLocalDataSource>(),
+      ),
     );
-    gh.lazySingleton<_i382.IAuthRepository>(
+    gh.factory<_i971.ISearchRepository>(
+      () => _i62.SearchRepositoryImpl(
+        flightRemote: gh<_i517.FlightRemoteDataSource>(),
+        hotelRemote: gh<_i562.HotelRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i382.IAuthRepository>(
       () => _i272.AuthRepositoryImpl(
         gh<_i458.AuthRemoteDataSource>(),
         gh<_i96.AuthLocalDataSource>(),
       ),
     );
+    gh.factory<_i347.AuthGuard>(
+      () => _i347.AuthGuard(gh<_i653.IAuthMockRepository>()),
+    );
+    gh.factory<_i347.RoleGuard>(
+      () => _i347.RoleGuard(gh<_i653.IAuthMockRepository>()),
+    );
     gh.factory<_i975.SplashUseCase>(
-      () => _i975.SplashUseCase(gh<_i382.IAuthRepository>()),
+      () => _i975.SplashUseCase(
+        gh<_i382.IAuthRepository>(),
+        gh<_i653.IAuthMockRepository>(),
+      ),
+    );
+    gh.factory<_i461.LogoutUseCase>(
+      () => _i461.LogoutUseCase(gh<_i653.IAuthMockRepository>()),
+    );
+    gh.factory<_i503.SearchHotels>(
+      () => _i503.SearchHotels(gh<_i971.ISearchRepository>()),
+    );
+    gh.factory<_i156.SearchFlights>(
+      () => _i156.SearchFlights(gh<_i971.ISearchRepository>()),
     );
     gh.factory<_i531.LoginUseCase>(
-      () => _i531.LoginUseCase(gh<_i382.IAuthRepository>()),
+      () => _i531.LoginUseCase(
+        gh<_i382.IAuthRepository>(),
+        gh<_i653.IAuthMockRepository>(),
+      ),
+    );
+    gh.factory<_i1059.SignupUseCase>(
+      () => _i1059.SignupUseCase(gh<_i382.IAuthRepository>()),
+    );
+    gh.factory<_i371.HotelSearchCubit>(
+      () => _i371.HotelSearchCubit(gh<_i503.SearchHotels>()),
+    );
+    gh.factory<_i570.AuthCubit>(
+      () => _i570.AuthCubit(gh<_i461.LogoutUseCase>()),
     );
     gh.factory<_i169.LoginCubit>(
       () => _i169.LoginCubit(gh<_i531.LoginUseCase>()),
+    );
+    gh.factory<_i774.FlightSearchCubit>(
+      () => _i774.FlightSearchCubit(gh<_i156.SearchFlights>()),
     );
     gh.factory<_i278.SplashCubit>(
       () => _i278.SplashCubit(gh<_i975.SplashUseCase>()),

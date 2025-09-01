@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:travel_app/app/router/app_router.dart';
 
+import '../../../../../app/router/route_names.dart';
+import '../../../../../core/helpers/keys.dart';
+import '../../../../../core/services/hive_service.dart';
 import '../../../domain/usecases/splash_usecase.dart';
 
 part 'splash_state.dart';
@@ -17,27 +21,24 @@ class SplashCubit extends Cubit<SplashState> {
 
     await _splashUseCase.clearUser();
 
-    final user = await _splashUseCase.getUser();
+    // final user = await _splashUseCase.getMockUser();
 
     await Future.delayed(const Duration(seconds: 1));
-
-    if (user != null) {
-      emit(SplashAuthenticated());
-    } else {
-      emit(SplashUnauthenticated());
-    }
   }
 
-  Future<void> init() async {
-    emit(SplashLoading());
-    await Future.delayed(const Duration(seconds: 1));
+  void getUser() {
+    final user = HiveServiceProvider.i.getUser();
 
-    final isLoggedIn = await _splashUseCase.isLoggedIn();
-
-    if (isLoggedIn) {
-      emit(SplashAuthenticated());
-    } else {
-      emit(SplashUnauthenticated());
-    }
+    Future.delayed(const Duration(seconds: 4), () {
+      if (user == null) {
+        router.go(RouteNames.login);
+      } else if (user['role'] == LocalKeys.b2bKey) {
+        router.go(RouteNames.agentHomePage);
+      } else if (user['role'] == LocalKeys.b2cKey) {
+        router.go(RouteNames.consumerHomePage);
+      } else {
+        router.go(RouteNames.login);
+      }
+    });
   }
 }

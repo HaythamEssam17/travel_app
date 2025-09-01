@@ -7,6 +7,8 @@ import 'package:travel_app/app/di/injection.dart';
 import 'app/my_app.dart';
 import 'app/observers/bloc_observer.dart';
 import 'core/network/error_handling/dio_exception.dart';
+import 'core/services/hive_service.dart';
+import 'core/services/service_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +18,10 @@ void main() async {
   await Future.delayed(Duration(seconds: 2));
 
   FlutterNativeSplash.remove();
+
+  await initServicesProviders();
+
+  final user = HiveServiceProvider.i.getUser();
 
   FlutterError.onError = DioExceptions.onFlutterError;
 

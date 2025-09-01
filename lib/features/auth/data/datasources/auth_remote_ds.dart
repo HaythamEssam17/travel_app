@@ -18,7 +18,10 @@ abstract class AuthRemoteDataSource {
 
   Future<void> refreshToken();
 
-  Future<void> signup(String username, String phone);
+  Future<Either<CustomError, UserCredentialsModel>> signup(
+    String username,
+    String phone,
+  );
 }
 
 @Injectable(as: AuthRemoteDataSource)
@@ -67,7 +70,35 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> signup(String username, String phone) async {
-    // TODO: implement signup
+  Future<Either<CustomError, UserCredentialsModel>> signup(
+    String username,
+    String phone,
+  ) async {
+    return executeAndHandleError(() async {
+      final dioHelper = getIt<DioHelper>();
+
+      var url = dotenv.get('request_access_token');
+      var clientId = dotenv.get('client_id');
+      var clientSecret = dotenv.get('client_secret');
+      var grantType = dotenv.get('grant_type');
+
+      Map<String, dynamic> data = {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'grant_type': grantType,
+      };
+
+      var response = await dioHelper.postData(url: url, data: data);
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to login');
+      }
+
+      UserCredentialsModel userCredentials = UserCredentialsModel.fromJson(
+        response.data,
+      );
+
+      return userCredentials;
+    });
   }
 }

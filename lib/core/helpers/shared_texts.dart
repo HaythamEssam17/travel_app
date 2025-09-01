@@ -1,3 +1,4 @@
+import '../../features/auth/data/models/login_response.dart';
 import '../responsive_ui/device_info.dart';
 
 class SharedText {
@@ -17,7 +18,7 @@ class SharedText {
 
   static DeviceInfo? deviceType;
 
-  // static AuthBaseModel currentUser = AuthBaseModel();
+  static User? user;
 
   static String currentLocale = 'ar';
   static String userToken = '';

@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                         buttonText: 'Login',
                         onPressedFunction: () {
                           if (cubit.globalKey.currentState!.validate()) {
-                            cubit.login();
+                            cubit.loginMockData();
                           }
                         },
                         // isEnable: state is LoginButtonEnabled,
@@ -120,7 +120,11 @@ class _LoginPageState extends State<LoginPage> {
         },
         listener: (context, state) {
           if (state is LoginSuccess) {
-            router.pushReplacementNamed(RouteNames.home);
+            if (SharedText.user?.role == 'B2C') {
+              router.pushReplacementNamed(RouteNames.consumerHomePage);
+            } else {
+              router.pushReplacementNamed(RouteNames.consumerHomePage);
+            }
           } else if (state is LoginError) {
             showSnackBar(context: context, title: state.message);
           }
