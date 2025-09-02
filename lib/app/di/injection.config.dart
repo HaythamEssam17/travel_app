@@ -49,6 +49,20 @@ import 'package:travel_app/features/auth/presentation/blocs/signup_cubit/signup_
     as _i288;
 import 'package:travel_app/features/auth/presentation/blocs/splash_cubit/splash_cubit.dart'
     as _i278;
+import 'package:travel_app/features/booking/data/datasources/booking_remote_ds.dart'
+    as _i992;
+import 'package:travel_app/features/booking/data/repositories/booking_repo_impl.dart'
+    as _i711;
+import 'package:travel_app/features/booking/domain/repositories/booking_repo.dart'
+    as _i155;
+import 'package:travel_app/features/booking/domain/usecases/cancel_booking.dart'
+    as _i577;
+import 'package:travel_app/features/booking/domain/usecases/create_booking.dart'
+    as _i528;
+import 'package:travel_app/features/booking/domain/usecases/watch_booking_status.dart'
+    as _i586;
+import 'package:travel_app/features/booking/presentation/blocs/booking_cubit.dart'
+    as _i769;
 import 'package:travel_app/features/search/data/data_source/flight_remote_ds.dart'
     as _i517;
 import 'package:travel_app/features/search/data/data_source/hotel_remote_ds.dart'
@@ -96,6 +110,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i124.AuthMockRemoteDataSource>(
       () => _i124.AuthMockRemoteDataSourceImpl(),
     );
+    gh.factory<_i992.BookingRemoteDataSource>(
+      () => _i992.BookingRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i162.DioHelper>(
       () => registerModule.dioHelper(gh<_i361.Dio>()),
     );
@@ -107,6 +124,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i96.AuthLocalDataSource>(
       () => _i96.AuthLocalDataSourceImpl(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.factory<_i155.IBookingRepository>(
+      () => _i711.BookingRepositoryImpl(gh<_i992.BookingRemoteDataSource>()),
     );
     gh.factory<_i653.IAuthMockRepository>(
       () => _i604.AuthMockRepositoryImpl(
@@ -147,6 +167,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i156.SearchFlights>(
       () => _i156.SearchFlights(gh<_i971.ISearchRepository>()),
     );
+    gh.factory<_i528.CreateBooking>(
+      () => _i528.CreateBooking(gh<_i155.IBookingRepository>()),
+    );
+    gh.factory<_i586.WatchBookingStatus>(
+      () => _i586.WatchBookingStatus(gh<_i155.IBookingRepository>()),
+    );
+    gh.factory<_i577.CancelBooking>(
+      () => _i577.CancelBooking(gh<_i155.IBookingRepository>()),
+    );
     gh.factory<_i531.LoginUseCase>(
       () => _i531.LoginUseCase(
         gh<_i382.IAuthRepository>(),
@@ -170,6 +199,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i278.SplashCubit>(
       () => _i278.SplashCubit(gh<_i975.SplashUseCase>()),
+    );
+    gh.factory<_i769.BookingCubit>(
+      () => _i769.BookingCubit(
+        gh<_i528.CreateBooking>(),
+        gh<_i586.WatchBookingStatus>(),
+        gh<_i577.CancelBooking>(),
+      ),
     );
     return this;
   }

@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:injectable/injectable.dart';
 import 'package:travel_app/core/services/hive_service.dart';
 import 'package:travel_app/features/search/domain/entites/flight_entity.dart';
@@ -23,24 +20,8 @@ class SearchRepositoryImpl implements ISearchRepository {
 
   SearchRepositoryImpl({required this.flightRemote, required this.hotelRemote});
 
-  String _key(String prefix, SearchParams params) {
-    final map = {
-      'q': params.query,
-      'page': params.page,
-      'perPage': params.perPage,
-      'minPrice': params.minPrice,
-      'maxPrice': params.maxPrice,
-      'airlines': params.airlines?.join(','),
-      'minRating': params.minRating,
-    };
-    final s = jsonEncode(map);
-    return '$prefix-${sha1.convert(utf8.encode(s))}';
-  }
-
   @override
   Future<PagedResponse<FlightEntity>> searchFlights(SearchParams params) async {
-    // final key = _key(LocalKeys.flightsCacheKey, params);
-    // final cached = cache.getFlights(key);
     final Map<String, dynamic>? cached = cache.getFlights();
     if (cached != null) {
       final ts = cached['ts'] as int;

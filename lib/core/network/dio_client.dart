@@ -219,7 +219,8 @@ class DioHelper {
   final Dio dio;
 
   DioHelper(this.dio);
-  Future<Response> getDate({required String url}) async {
+
+  Future<Response> getData({required String url}) async {
     try {
       return await dio.get(url);
     } on DioException catch (exception) {

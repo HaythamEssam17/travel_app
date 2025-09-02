@@ -3,6 +3,8 @@ import 'package:travel_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:travel_app/features/auth/presentation/pages/splash_page.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/booking/presentation/pages/booking_details_page.dart';
+import '../../features/booking/presentation/pages/booking_status_page.dart';
 import '../../features/home/presentation/pages/agent_home_page.dart';
 import '../../features/home/presentation/pages/consumer_home_page.dart';
 import 'route_names.dart';
@@ -32,6 +34,23 @@ final router = GoRouter(
       path: RouteNames.agentHomePage,
       name: RouteNames.agentHomePage,
       builder: (context, state) => const AgentHomePage(),
+    ),
+    GoRoute(
+      path: RouteNames.bookingDetailsPage,
+      name: RouteNames.bookingDetailsPage,
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return BookingDetailsPage(
+          itemId: extra['itemId'],
+          itemType: extra['itemType'],
+          item: extra['item'],
+        );
+      },
+    ),
+    GoRoute(
+      path: RouteNames.bookingStatusPage,
+      name: RouteNames.bookingStatusPage,
+      builder: (context, state) => const BookingStatusPage(),
     ),
   ],
 );

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:travel_app/app/router/app_router.dart';
+import 'package:travel_app/core/helpers/shared_texts.dart';
 
 import '../../../../../app/router/route_names.dart';
 import '../../../../../core/helpers/keys.dart';
 import '../../../../../core/services/hive_service.dart';
+import '../../../data/models/login_response.dart';
 import '../../../domain/usecases/splash_usecase.dart';
 
 part 'splash_state.dart';
@@ -28,6 +30,10 @@ class SplashCubit extends Cubit<SplashState> {
 
   void getUser() {
     final user = HiveServiceProvider.i.getUser();
+
+    if (user != null) {
+      SharedText.user = User.fromJson(user);
+    }
 
     Future.delayed(const Duration(seconds: 4), () {
       if (user == null) {

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/di/injection.dart';
-import 'package:travel_app/core/helpers/helper_methods.dart';
-import 'package:travel_app/features/search/presentation/widgets/flight_card_widget.dart';
 
+import '../../../../app/router/app_router.dart';
+import '../../../../app/router/route_names.dart';
+import '../../../../core/helpers/helper_methods.dart';
 import '../bloc/flight_search/flight_search_cubit.dart';
 import '../bloc/flight_search/flight_search_states.dart';
+import '../widgets/flight_card_widget.dart';
 
 class FlightSearchPage extends StatelessWidget {
   const FlightSearchPage({super.key});
@@ -48,7 +50,21 @@ class FlightSearchPage extends StatelessWidget {
                 separatorBuilder: (_, __) => getSpaceHeight(8),
                 itemBuilder: (context, index) {
                   if (index < state.items.length) {
-                    return FlightCardWidget(flightEntity: state.items[index]);
+                    return RepaintBoundary(
+                      child: FlightCardWidget(
+                        flightEntity: state.items[index],
+                        onTap: () {
+                          router.pushNamed(
+                            RouteNames.bookingDetailsPage,
+                            extra: {
+                              'itemId': state.items[index].id,
+                              'itemType': 'flight',
+                              'item': state.items[index],
+                            },
+                          );
+                        },
+                      ),
+                    );
                   } else {
                     return const Padding(
                       padding: EdgeInsets.all(16),

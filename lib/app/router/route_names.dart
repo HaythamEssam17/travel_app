@@ -4,4 +4,6 @@ class RouteNames {
   static String consumerHomePage = '/consumerHomePage';
   static String agentHomePage = '/agentHomePage';
   static String signup = '/signup';
+  static String bookingDetailsPage = '/bookingDetailsPage';
+  static String bookingStatusPage = '/bookingStatusPage';
 }

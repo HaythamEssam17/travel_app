@@ -14,7 +14,7 @@ class FlightModel {
   @HiveField(2)
   final double? price;
   @HiveField(3)
-  final String? departAt; // iso string
+  final String? departAt;
   @HiveField(4)
   final String? arriveAt;
   @HiveField(5)

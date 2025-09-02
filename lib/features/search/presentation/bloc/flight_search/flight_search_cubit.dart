@@ -29,6 +29,13 @@ class FlightSearchCubit extends Cubit<FlightSearchState> {
     });
   }
 
+  FlightEntity? selectedFlightEntity;
+
+  void selectFlight(FlightEntity flightEntity) {
+    selectedFlightEntity = flightEntity;
+    emit(state);
+  }
+
   @override
   Future<void> close() {
     scrollController.dispose();
@@ -45,7 +52,9 @@ class FlightSearchCubit extends Cubit<FlightSearchState> {
 
     try {
       _params = params ?? _params.copyWith(page: 1);
+
       final res = await useCase.call(_params);
+
       emit(
         state.copyWith(
           loading: false,

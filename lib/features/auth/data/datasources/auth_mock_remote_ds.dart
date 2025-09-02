@@ -22,7 +22,12 @@ class AuthMockRemoteDataSourceImpl implements AuthMockRemoteDataSource {
     return LoginResponse(
       accessToken: "mock_access_token:9435yn43u5y4u535m9um04",
       refreshToken: "mock_refresh:token:tttttttttttttttttttttt",
-      user: User(id: "1", name: "Ali", role: "B2C", email: 'ali@2.com'),
+      user: User(
+        id: "1",
+        name: "Haitham Essam",
+        role: "B2C",
+        email: 'haysamessam1477@gmail.com',
+      ),
     );
   }
 
@@ -45,7 +50,12 @@ class AuthMockRemoteDataSourceImpl implements AuthMockRemoteDataSource {
     return LoginResponse(
       accessToken: "new_access",
       refreshToken: "new_refresh",
-      user: User(id: "1", name: "Ali", role: "B2C", email: 'ali@2.com'),
+      user: User(
+        id: "1",
+        name: "Haitham Essam",
+        role: "B2C",
+        email: 'haysamessam1477@gmail.com',
+      ),
     );
   }
 }

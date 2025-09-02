@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:travel_app/app/di/injection.dart';
-import 'package:travel_app/core/widgets/common_title_text.dart';
+import 'package:travel_app/core/helpers/helper_methods.dart';
+import 'package:travel_app/features/search/presentation/widgets/hotel_item_widget.dart';
 
 import '../bloc/hotel_search/hotel_search_cubit.dart';
 import '../bloc/hotel_search/hotel_search_states.dart';
@@ -44,19 +45,21 @@ class HotelSearchPage extends StatelessWidget {
                 controller: cubit.scrollController,
                 itemCount: state.items.length + (state.loading ? 1 : 0),
                 padding: EdgeInsets.all(16),
-                separatorBuilder: (_, __) => const Divider(height: 1),
+                separatorBuilder: (_, __) => getSpaceHeight(8),
                 itemBuilder: (context, index) {
                   if (index < state.items.length) {
-                    final h = state.items[index];
-                    return ListTile(
-                      leading: Image.network(
-                        h.imageUrl,
-                        width: 80,
-                        fit: BoxFit.cover,
-                      ),
-                      title: CommonTitleText(textKey: "Item ${h.name}"),
-                      subtitle: Text('${h.city} • ${h.rating}★'),
-                    );
+                    final hotel = state.items[index];
+                    return HotelItem(hotel: hotel);
+
+                    // return ListTile(
+                    //   leading: Image.network(
+                    //     hotel.imageUrl,
+                    //     width: 80,
+                    //     fit: BoxFit.cover,
+                    //   ),
+                    //   title: CommonTitleText(textKey: "Item ${hotel.name}"),
+                    //   subtitle: Text('${hotel.city} • ${hotel.rating}★'),
+                    // );
                   } else {
                     return const Padding(
                       padding: EdgeInsets.all(16),
