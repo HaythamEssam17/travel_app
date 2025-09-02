@@ -21,7 +21,6 @@ This repo implements a Flutter travel app with Flights & Hotels search, booking 
    - `flutter pub get`
 
 2. **Before running the app**
-```bash
 dart tools/fix_run.dart haitham
 
 3. **Run app (staging)**
