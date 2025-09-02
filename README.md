@@ -57,7 +57,7 @@ lib/
 
 ⚙️ Setup & Installation
 1. Clone the repo
-git clone https://github.com/your-username/your-repo.git
+git clone https://github.com/HaythamEssam17/travel_app.git
 cd your-repo
 
 2. Install dependencies
