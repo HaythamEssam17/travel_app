@@ -1,7 +1,38 @@
-# Travel App (Flutter) — Build & Deployment
+# ✈️ Travel Booking App
 
 ## Overview
-This repo implements a Flutter travel app with Flights & Hotels search, booking flow, offline caching (Hive), JWT auth, and role-based routing.
+A Flutter-based travel booking application supporting flights and hotels with caching, booking flow, and real-time updates.
+
+---
+
+## 🚀 Features
+- 🔐 Authentication (login/logout)
+- 🏨 Hotel & Flight search with pagination
+- 💾 Local caching using Hive
+- 📅 Booking flow (select → details → confirm)
+- 🔔 Real-time booking status updates (WebSocket simulation)
+- 🎨 Beautiful responsive UI (Material + Cupertino)
+- ⚡ Optimized for performance on low-end devices
+- ✅ Unit, Widget, and Integration Tests
+- 🏗️ Flavor-based builds (staging & production)
+
+---
+
+## 🛠️ Tech Stack
+- **Flutter** (3.x)
+- **State Management**: GetX / BLoC (depending on your implementation)
+- **Hive** (local caching)
+- **GoRouter** (navigation)
+- **Mockito/Mocktail** (testing)
+- **CI/CD ready**
+
+---
+
+## 📦 Setup
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
 
 ---
 
