@@ -1,4 +1,4 @@
-import 'package:travel_app/features/search/domain/entites/hotel_entity.dart';
+import '../../../domain/entites/hotel_entity.dart';
 
 class HotelSearchState {
   final bool loading;
@@ -31,3 +31,22 @@ class HotelSearchState {
     );
   }
 }
+
+//
+// class HotelSearchInit extends HotelSearchState {}
+//
+// class HotelSearchLoading extends HotelSearchState {}
+//
+// class HotelSearchLoadingMore extends HotelSearchState {}
+//
+// class HotelSearchEmpty extends HotelSearchState {}
+//
+// class HotelSearchSuccess extends HotelSearchState {}
+//
+// class HotelSearchSuccessMoreDate extends HotelSearchState {}
+//
+// class HotelSearchErrorMoreDate extends HotelSearchState {
+//   final String error;
+//
+//   HotelSearchErrorMoreDate(this.error);
+// }

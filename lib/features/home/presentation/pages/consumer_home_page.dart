@@ -1,48 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:travel_app/app/app_scaffold_page.dart';
 import 'package:travel_app/core/helpers/extensions/context_extensions.dart';
-import 'package:travel_app/core/helpers/shared_texts.dart';
-import 'package:travel_app/core/widgets/common_title_text.dart';
+import 'package:travel_app/features/search/presentation/pages/flight_search_page.dart';
+import 'package:travel_app/features/search/presentation/pages/hotel_search_page.dart';
 
-import '../../../../core/widgets/common_app_bar_widget.dart';
-import '../../../search/presentation/pages/flight_search_page.dart';
-
-class ConsumerHomePage extends StatelessWidget {
+class ConsumerHomePage extends StatefulWidget {
   const ConsumerHomePage({super.key});
+
+  @override
+  State<ConsumerHomePage> createState() => _ConsumerHomePageState();
+}
+
+List<Widget> widgets = [FlightSearchPage(), HotelSearchPage()];
+
+class _ConsumerHomePageState extends State<ConsumerHomePage>
+    with TickerProviderStateMixin {
+  late TabController tabController;
+  int _tabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(length: 2, vsync: this)
+      ..addListener(() {
+        setState(() => _tabIndex = tabController.index);
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffoldPage(
-      appBar: AppBarWithBottomWidget(
-        isBackArrow: false,
-        actions: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return FlightSearchPage();
-                },
+      body: Column(
+        children: [
+          Container(
+            height: 48,
+            margin: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              border: Border.all(width: 2),
+            ),
+            child: TabBar(
+              indicatorWeight: 0,
+              indicatorPadding: EdgeInsets.zero,
+              indicatorSize: TabBarIndicatorSize.tab,
+              controller: tabController,
+              dividerHeight: 0,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.0),
+                color: context.appColors.primaryColor,
               ),
-            );
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Center(
-              child: CommonTitleText(
-                textKey: 'Flight Search',
-                textStyle: TextStyle(color: context.appColors.primaryColor),
+              labelStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
               ),
+              unselectedLabelColor: Colors.grey,
+              splashBorderRadius: BorderRadius.circular(20),
+              padding: EdgeInsets.all(3),
+              tabs: const [
+                Tab(text: 'Flights'),
+                Tab(text: 'Hotels'),
+              ],
             ),
           ),
-        ),
-      ),
-      body: SizedBox(
-        height: SharedText.screenHeight,
-        width: SharedText.screenWidth,
-        child: Column(
-          children: [CommonTitleText(textKey: 'Consumer Home Page')],
-        ),
+          Expanded(child: widgets[_tabIndex]),
+        ],
       ),
     );
   }

@@ -25,6 +25,7 @@ class HiveServiceProvider implements ServiceProvider {
 
     // await deleteBox(LocalKeys.userBox);
     // await deleteBox(LocalKeys.loginResponseBox);
+    // await deleteBox(LocalKeys.hotelsCacheBoxKey);
 
     await Future.wait([
       openBox<String>(LocalKeys.userBox),
@@ -53,8 +54,7 @@ class HiveServiceProvider implements ServiceProvider {
 
   Box<String> get _flightsBox => Hive.box<String>(LocalKeys.flightsCacheBoxKey);
 
-  Box<Map<String, dynamic>> get _hotelsBox =>
-      Hive.box<Map<String, dynamic>>(LocalKeys.hotelsCacheBoxKey);
+  Box<String> get _hotelsBox => Hive.box<String>(LocalKeys.hotelsCacheBoxKey);
 
   Box<LoginResponse> get loginBox =>
       Hive.box<LoginResponse>(LocalKeys.loginResponseBox);
@@ -93,8 +93,13 @@ class HiveServiceProvider implements ServiceProvider {
   }
 
   Future<void> saveHotels(Map<String, dynamic> data) async {
-    await _hotelsBox.put(LocalKeys.hotelsCacheKey, data);
+    final String jsonString = jsonEncode(data);
+    await _hotelsBox.put(LocalKeys.hotelsCacheKey, jsonString);
   }
 
-  Map<String, dynamic>? getHotels() => _hotelsBox.get(LocalKeys.hotelsCacheKey);
+  Map<String, dynamic>? getHotels() {
+    final jsonString = _hotelsBox.get(LocalKeys.hotelsCacheKey);
+    if (jsonString == null) return null;
+    return jsonDecode(jsonString) as Map<String, dynamic>;
+  }
 }

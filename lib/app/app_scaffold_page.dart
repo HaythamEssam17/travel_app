@@ -40,7 +40,7 @@ class _AppScaffoldPageState extends State<AppScaffoldPage> {
                 widget.appBar!,
                 getSpaceHeight(16),
               ] else ...[
-                getSpaceHeight(kToolbarHeight),
+                // getSpaceHeight(kToolbarHeight),
               ],
               Expanded(
                 child: GestureDetector(

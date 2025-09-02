@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -11,10 +12,37 @@ class FlightSearchCubit extends Cubit<FlightSearchState> {
   final SearchFlights useCase;
   SearchParams _params = SearchParams();
 
-  FlightSearchCubit(this.useCase) : super(FlightSearchState());
+  final ScrollController scrollController = ScrollController();
 
-  Future<void> search({SearchParams? params, bool forceRefresh = false}) async {
+  FlightSearchCubit(this.useCase) : super(FlightSearchState()) {
+    scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 100 &&
+          !state.loading &&
+          state.hasMore) {
+        loadNextPage();
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    scrollController.dispose();
+    return super.close();
+  }
+
+  Future<void> getFlights({
+    SearchParams? params,
+    bool forceRefresh = false,
+  }) async {
+    if (state.loading || !state.hasMore) return;
+
     emit(state.copyWith(loading: true, error: null));
+
     try {
       _params = params ?? _params.copyWith(page: 1);
       final res = await useCase.call(_params);
@@ -33,12 +61,18 @@ class FlightSearchCubit extends Cubit<FlightSearchState> {
 
   Future<void> loadNextPage() async {
     if (!state.hasMore || state.loading) return;
+
     final next = state.page + 1;
     emit(state.copyWith(loading: true));
+
     try {
       _params = _params.copyWith(page: next);
+      await Future.delayed(const Duration(seconds: 2));
+
       final res = await useCase(_params);
+
       final all = List<FlightEntity>.from(state.items)..addAll(res.items);
+
       emit(
         state.copyWith(
           loading: false,
@@ -52,19 +86,21 @@ class FlightSearchCubit extends Cubit<FlightSearchState> {
     }
   }
 
-  void applyFilters({
-    double? minPrice,
-    double? maxPrice,
-    List<String>? airlines,
-    double? minRating,
-  }) {
-    _params = _params.copyWith(
-      minPrice: minPrice,
-      maxPrice: maxPrice,
-      airlines: airlines,
-      minRating: minRating,
-      page: 1,
-    );
-    search(params: _params);
+  Future<void> refreshHotels() async {
+    _params = _params.copyWith(page: 1);
+    emit(FlightSearchState(loading: true)); // reset state
+    try {
+      final res = await useCase(_params);
+      emit(
+        state.copyWith(
+          loading: false,
+          items: res.items,
+          page: res.page,
+          hasMore: res.page * res.perPage < res.total,
+        ),
+      );
+    } catch (e) {
+      emit(FlightSearchState(loading: false, error: e.toString()));
+    }
   }
 }
