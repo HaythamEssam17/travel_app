@@ -29,11 +29,11 @@ class HotelSearchCubit extends Cubit<HotelSearchState> {
     });
   }
 
-  @override
-  Future<void> close() {
-    scrollController.dispose();
-    return super.close();
-  }
+  // @override
+  // Future<void> close() {
+  //   scrollController.dispose();
+  //   return super.close();
+  // }
 
   Future<void> getHotels({
     SearchParams? params,
