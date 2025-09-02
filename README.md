@@ -1,17 +1,25 @@
-# travel_app
+# Travel App (Flutter) — Build & Deployment
 
-A new Flutter project.
+## Overview
+This repo implements a Flutter travel app with Flights & Hotels search, booking flow, offline caching (Hive), JWT auth, and role-based routing.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Project structure
+- `lib/features/search/...` — Search (onion architecture)
+- `lib/features/booking/...` — Booking flow
+- `lib/features/auth/...` — Authentication
+- `lib/app_config.dart` — environment config (via `--dart-define`)
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Local setup
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# travel_app
+1. **Prerequisites**
+   - Flutter SDK (stable)
+   - Android SDK / Xcode (for iOS)
+   - `flutter pub get`
+
+2. **Run app (staging)**
+```bash
+flutter run --flavor staging -t lib/main.dart --dart-define=API_URL=https://staging.api/ --dart-define=FLAVOR=staging
